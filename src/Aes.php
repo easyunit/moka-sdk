@@ -2,6 +2,8 @@
 
 namespace Moka;
 
+use Moka\Random;
+
 /**
  * Class Aes
  * @author Lucifer from Moka
@@ -29,7 +31,7 @@ class Aes
 		}
 
 		$key = base64_decode($key . "=");
-		$random = self::getRandomStr();
+		$random = Random::str();
 		$pack_plaintext = $random . pack("N", strlen($plaintext)) . $plaintext . $flag;
 		$iv = substr($key, 0, 16);
 		$padding_plaintext = self::encode($pack_plaintext);
@@ -60,20 +62,6 @@ class Aes
 		if ($parse_flag != $flag) throw  new \Exception("aes flag error.");
 		$plaintext = substr($content, 4, $len);
 		return $plaintext;
-	}
-
-	/**
-	 * 获取随机字符串
-	 */
-	private static function getRandomStr()
-	{
-		$str = "";
-		$pool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-		$max = strlen($pool) - 1;
-		for ($i = 0; $i < 16; $i++) {
-			$str .= $pool[mt_rand(0, $max)];
-		}
-		return $str;
 	}
 
 	private static function encode($text)
