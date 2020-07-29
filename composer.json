@@ -1,6 +1,6 @@
 {
   "name": "easyunit/moka-sdk",
-  "description": "moka sDK package",
+  "description": "moka sdk package",
   "type": "library",
   "license": "MIT",
   "authors": [
