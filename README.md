@@ -14,7 +14,8 @@ composer require easyunit/moka-sdk=1.0.0.x-dev
 
 - 客户端说明
   - key 一般为客户端和服务端之间的密钥
-  - flag 标识符 可以为微信appid
+  - flag 标识符 可以为微信appid 可以为mokaid
+  - 客户段应该加加密后的密文和flag一起发送给服务端
 
 ```php
 use Moka\Aes;
