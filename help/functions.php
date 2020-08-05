@@ -64,6 +64,6 @@ if (!function_exists('moka_redis')) {
      */
     function moka_redis(Int $dbindex = 0, String $config = 'default')
     {
-        return \moka\Redis::instance($dbindex, $config);
+        return \Moka\Redis::instance($dbindex, $config);
     }
 }
