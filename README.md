@@ -93,3 +93,38 @@ $param['secret'] = 'uPNkA4BlSsLnKIca';
 $res = Signature::check($param);
 ```
 
+
+
+## Redis链接封装
+
+- 支持框架 thinkphp 5.0
+- 支持redis单机 支持redis集群 请参考将config/redis.php移到app/extra目录下，并完成相关的redis配置
+
+
+- 单例模式说明
+  
+  - moka_redis() 会对传入的不同的配置项，进行单例链接
+  
+- 集群与分布式集群说明
+  - 使用分布式集群 端口和ip不同时需要将配置写入cluster的位置
+  - 使用阿里云集群时，阿里云会自动管理ip和端口，咱们作为阿里云redis购买方，拿到的是单个ip和port，使用default等配置即可
+  
+- 函数
+
+  ```php
+  /**
+   * @param $dbindex 要链接的redis库
+   * @param $config  要使用的配置
+   * @return 链接池
+   */
+  moka_redis(Int $dbindex=0,String $config='default') : connected
+  ```
+
+- 使用示例
+
+```php
+moka_redis()->get('name');   // 使用默认配置进行操作
+moka_redis(0,'mid')->get('name');  // 切换中台配置进行操作
+moka_redis(0,'cluster')->get('name');   // 使用分布式集群进行操作
+```
+

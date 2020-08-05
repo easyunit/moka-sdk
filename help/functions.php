@@ -53,3 +53,17 @@ if (!function_exists('p')) {
         }
     }
 }
+
+if (!function_exists('moka_redis')) {
+    /**
+     * -------------------------------------------
+     * Redis连接对象
+     * @param Integer $dbindex 数据库
+     * @param String   $config  配置项文件名
+     * -------------------------------------------
+     */
+    function moka_redis(Int $dbindex = 0, String $config = 'default')
+    {
+        return \moka\Redis::instance($dbindex, $config);
+    }
+}
