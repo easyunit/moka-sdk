@@ -18,13 +18,13 @@ class Limiter
         $pipe = moka_redis()->multi(\Redis::PIPELINE);
         $pipe->zadd($key, $now_ts, $now_ts);
         $pipe->zremrangeByScore($key, 0, $now_ts - $period * 10000);
-        // $counter = $pipe->zcard($key);
+        $pipe->zcard($key);
         $pipe->expire($key, $period + 1);
-        $pipe->exec();
+        $replies = $pipe->exec();
         $pipe->close();
 
         // 单独获取操作数量
-        $counter = moka_redis()->zcard($key);
-        return $counter <= $max_count;
+        // $counter = moka_redis()->zcard($key);
+        return $replies[2] <= $max_count;
     }
 }
