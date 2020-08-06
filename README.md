@@ -128,3 +128,68 @@ moka_redis(0,'mid')->get('name');  // 切换中台配置进行操作
 moka_redis(0,'cluster')->get('name');   // 使用分布式集群进行操作
 ```
 
+## 接口限流
+
+- 计数器限流
+
+  - 如果$period和$max_count允许的数量都很多，遇到并发操作时，redis占用内存会比较高
+  - redis默认配置为127.0.0.1 6379，composer安装到tp框架时，链接不同的数据库参考Redis链接封装
+
+  ```php
+  /**
+   * @param $user_id 用户id
+   * @param $action  要进行的操作 比如 reply 回复帖子
+   * @param $period  计数单位 默认60秒
+   * @param $max_count 允许的操作,[60s]内允许操作30次
+   * @return bool 是否允许操作
+   */
+  Limiter::isActionAllowed(Int $user_id,$action,$period=60,$max_count=30) : bool
+  ```
+
+  - 使用示例
+
+  ```php
+  use Moka\Limiter;
+  $bool = Limiter::isActionAllowed(1,'repay',60,30);
+  if($bool){
+    echo '操作成功';
+  }else{
+    echo '请勿频繁操作';
+  }
+  ```
+
+- 漏斗限流
+
+  - php漏斗限流 如果采用分布式 redis暂时不支持原子性操作，需要安装redis-cell扩展
+
+  - php内实现漏斗限流，则不支持分布式
+
+    ```php
+    /**
+     * -------------------------------------------
+     * 漏斗限流
+     * @param Integer  $user_id   用户id
+     * @param String   $action    用户的操作
+     * @param Int      $capacity  漏斗容量
+     * @param Int      $leaking_rate 流水速率
+     * -------------------------------------------
+     */
+    isActionAllowed(Int $user_id, String $action, $capacity = 60, $leaking_rate = 30): bool
+    ```
+
+  - 使用示例
+
+    ```php
+    $funnels = [];
+    global $funnel;
+    
+    for ($i = 0; $i < 30; $i++) {
+        echo $i;
+        // user_id 操作 最大容量 流水速率
+        d(isActionAllowed("110", "reply", 15, 0.3));
+        echo '</br>';
+        sleep(1);
+    }
+    ```
+
+    
