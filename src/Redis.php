@@ -21,31 +21,30 @@ class Redis
     /**
      * 单例
      */
-    private function __construct(String $config,Array $conf)
+    private function __construct(String $config, array $conf)
     {
-        if($config =='cluster'){
+        if ($config == 'cluster') {
             // 待测试
             $this->client = new \RedisCluster('', $conf['list'], $conf['timeout'], $conf['read_timeout'], $conf['presistent'], $conf['pass']);
-        }else{
+        } else {
             // 已测试
             $this->client = new \Redis();
-            
+
             try {
                 $this->client->connect($conf['host'], $conf['port']);
             } catch (\Throwable $th) {
-                error('请检查ip和端口');
+                dd('请检查ip和端口');
             }
-   
+
             if (empty($conf['pass'])) {
-                return error('redis密码不能为空', '', 500);
+                return dd('redis密码不能为空', '', 500);
             } else {
                 try {
                     $this->client->auth($conf['pass']);
                 } catch (\Exception $e) {
-                    return error('redis密码错误', '', 500);
+                    return dd('redis密码错误', '', 500);
                 }
             }
-
         }
 
         return $this;
@@ -53,14 +52,23 @@ class Redis
 
     /**
      * 连接的实例
+     * @param String||Array $dbindex 要连接的数据库
      * @param String||Array $config 配置项 String时配置文件名 Array配置项
      */
-    public static function instance(Int $dbindex = 0,String $config = null)
+    public static function instance(Int $dbindex = 0, $config = null)
     {
-
-        if (self::$_instance[$config] === null) {
-            $conf = \think\Config::get('redis.' . $config);
-            self::$_instance[$config] = new self($config,$conf);
+        if (is_array($config)) {
+            $conf = $config;
+            $config = 'test';
+            if (empty(self::$_instance['test'])) {
+                self::$_instance[$config] = new self($config, $conf);
+            }
+        } else {
+            // tp配置文件
+            if (empty(self::$_instance[$config])) {
+                $conf = \think\Config::get('redis.' . $config);
+                self::$_instance[$config] = new self($config, $conf);
+            }
         }
 
         try {

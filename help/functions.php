@@ -64,6 +64,13 @@ if (!function_exists('moka_redis')) {
      */
     function moka_redis(Int $dbindex = 0, String $config = 'default')
     {
+        // 使用tp5时，请注释掉 if 内内容 此作为测试使用
+        if ($config = 'default') {
+            $config = array();
+            $config['host'] = '127.0.0.1';
+            $config['port'] = 6379;
+            $config['pass'] = 'root';
+        }
         return \Moka\Redis::instance($dbindex, $config);
     }
 }
