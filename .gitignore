@@ -1,3 +1,9 @@
+# require
 vendor/*
+
+# edit 
 .vscode/*
+.idea/*
+
+# mac
 .DS_Store
