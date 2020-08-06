@@ -1,5 +1,9 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
+
+use Moka\Funnel;
+
 if (!function_exists('dd')) {
     /**
      * -------------------------------------------
@@ -84,5 +88,28 @@ if (!function_exists('moka_redis')) {
             $config['pass'] = 'root';
         }
         return \Moka\Redis::instance($dbindex, $config);
+    }
+}
+
+if (!function_exists('isActionAllowed')) {
+    /**
+     * -------------------------------------------
+     * 漏斗限流
+     * @param Integer  $user_id   用户id
+     * @param String   $action    用户的操作
+     * @param Int      $capacity  漏斗容量
+     * @param Int      $leaking_rate 流水速率
+     * -------------------------------------------
+     */
+    function isActionAllowed(Int $user_id, String $action, $capacity = 60, $leaking_rate = 30): bool
+    {
+        $key = 'hist:' . $user_id . ':' . $action;
+        // $key = sprintf("%s:%s", $user_id, $action);
+        $funnel = $GLOBALS['funnel'][$key] ?? '';
+        if (!$funnel) {
+            $funnel  = new Funnel($capacity, $leaking_rate);
+            $GLOBALS['funnel'][$key] = $funnel;
+        }
+        return $funnel->watering(1);
     }
 }
