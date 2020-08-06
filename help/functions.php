@@ -13,6 +13,18 @@ if (!function_exists('dd')) {
     }
 }
 
+if (!function_exists('d')) {
+    /**
+     * -------------------------------------------
+     * 断点调试函数
+     * -------------------------------------------
+     */
+    function d()
+    {
+        call_user_func_array('var_dump', func_get_args());
+    }
+}
+
 if (!function_exists('pd')) {
     /**
      * -------------------------------------------
