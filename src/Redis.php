@@ -52,31 +52,27 @@ class Redis
 
     /**
      * 连接的实例
-     * @param String||Array $dbindex 要连接的数据库
-     * @param String||Array $config 配置项 String时配置文件名 Array配置项
+     * @param Int   $dbindex 要连接的数据库
+     * @param Array $config 配置项 String时配置文件名 Array配置项
      */
     public static function instance(Int $dbindex = 0, $config = null)
     {
         if (is_array($config)) {
-            $conf = $config;
-            $config = 'test';
-            if (empty(self::$_instance['test'])) {
-                self::$_instance[$config] = new self($config, $conf);
+            // $tag = md5(json_encode($config));
+            $flag = $config['flag'];
+            if (empty(self::$_instance[$flag])) {
+                self::$_instance[$flag] = new self($flag, $config);
             }
         } else {
-            // tp配置文件
-            if (empty(self::$_instance[$config])) {
-                $conf = \think\Config::get('redis.' . $config);
-                self::$_instance[$config] = new self($config, $conf);
-            }
+            dd('配置错误');
         }
 
         try {
-            self::$_instance[$config]->client->select($dbindex);
+            self::$_instance[$flag]->client->select($dbindex);
         } catch (\Exception $e) {
-            return error('选择数据库失败，请检查密码', '', 500);
+            return dd('选择数据库失败，请检查密码', '', 500);
         }
-        return self::$_instance[$config]->client;
+        return self::$_instance[$flag]->client;
     }
     public function __destruct()
     {

@@ -73,21 +73,29 @@ if (!function_exists('p')) {
 if (!function_exists('moka_redis')) {
     /**
      * -------------------------------------------
-     * Redis连接对象
+     * Redis连接对象 用户需要结合框架自行实现
      * @param Integer $dbindex 数据库
-     * @param String   $config  配置项文件名
+     * @param String||Array   $config  配置项文件名
      * -------------------------------------------
      */
-    function moka_redis(Int $dbindex = 0, String $config = 'default')
+    function moka_redis(Int $dbindex = 0, $config = 'default')
     {
-        // 使用tp5时，请注释掉 if 内内容 此作为测试使用
+
         if ($config = 'default') {
-            $config = array();
-            $config['host'] = '127.0.0.1';
-            $config['port'] = 6379;
-            $config['pass'] = 'root';
+            // 此处为测试时使用
+            $conf = array();
+            $conf['host'] = '127.0.0.1';
+            $conf['port'] = 6379;
+            $conf['pass'] = 'root';
+            $conf['flag'] = 'default';
+        } else {
+            // 此处需要用户自行实现
+            $conf = \think\Config::get('redis.' . $config);
+            $conf['flag'] = $config;
         }
-        return \Moka\Redis::instance($dbindex, $config);
+
+
+        return \Moka\Redis::instance($dbindex, $conf);
     }
 }
 

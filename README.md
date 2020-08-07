@@ -97,8 +97,7 @@ $res = Signature::check($param);
 
 ## Redis链接封装
 
-- 支持框架 thinkphp 5.0
-- 支持redis单机 支持redis集群 请参考将config/redis.php移到app/extra目录下，并完成相关的redis配置
+- 支持redis单机 支持redis集群 tp框架请将config/redis.php移到app/extra目录下，并完成相关的redis配置
 
 
 - 单例模式说明
@@ -109,7 +108,10 @@ $res = Signature::check($param);
   - 使用分布式集群 端口和ip不同时需要将配置写入cluster的位置
   - 使用阿里云集群时，阿里云会自动管理ip和端口，咱们作为阿里云redis购买方，拿到的是单个ip和port，使用default等配置即可
   
-- 函数
+- 助手函数
+
+
+  - 用户需要此函数放在公共助手函数中
 
   ```php
   /**
@@ -117,7 +119,12 @@ $res = Signature::check($param);
    * @param $config  要使用的配置
    * @return 链接池
    */
-  moka_redis(Int $dbindex=0,String $config='default') : connected
+  function moka_redis(Int $dbindex = 0, $config = 'default')
+  {
+      $conf = \think\Config::get('redis.' . $config);   // 此处为tp框架配置  // 如果需要使用laravel框架 需自行读取配置
+    	$conf['flag'] = $config;
+      return \Moka\Redis::instance($dbindex, $conf);
+  }
   ```
 
 - 使用示例
