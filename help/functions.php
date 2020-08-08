@@ -5,6 +5,20 @@ require __DIR__ . '/../vendor/autoload.php';
 use Moka\Funnel;
 
 if (!function_exists('dd')) {
+    function dd($param)
+    {
+        header("Content-type:text/json");
+        header("HTTP/1.1 400 Bad Request");
+        $data['code']       = 200;
+        $data['time']       = time();
+        $data['url']        = $_SERVER['HTTP_HOST'];
+        $data['data']        = $param;
+        echo json_encode($data);
+        die;
+    }
+}
+
+if (!function_exists('dd')) {
     /**
      * -------------------------------------------
      * 断点调试函数
