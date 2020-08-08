@@ -16,7 +16,7 @@ class Monitor
      * @param Sting $url   访问的url
      * @param Int   $level 记录的等级，1记录秒 2记录分钟 4记录小时 8记录天
      */
-    public static function Pv(String $url, Int $level = 2): bool
+    public static function Pv(String $url, Int $level = 8): bool
     {
         date_default_timezone_set('Asia/Shanghai');
         $now = time();
@@ -58,7 +58,7 @@ class Monitor
      * @param Int   $section    扫描区间 默认扫描 60s 30m 12h 7d
      * @param Int   $level      扫描等级 1按秒扫描 2按分钟扫描 4按小时扫描 8按天扫描
      */
-    public static function GetPv(String $url = null, Int $section = null, Int $level = 8): array
+    public static function GetPv($url = null, Int $section = null, Int $level = 8): array
     {
         date_default_timezone_set('Asia/Shanghai');
         $now = time();
