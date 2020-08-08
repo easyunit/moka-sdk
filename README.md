@@ -200,3 +200,65 @@ moka_redis(0,'cluster')->get('name');   // 使用分布式集群进行操作
     ```
 
     
+
+## 接口监控
+
+- 统计接口访问次数(PV)
+
+  - 示例 在需要统计的地方写一行```Monitor::Pv($url, 8);```
+
+  ```php
+  require __DIR__ . '/../vendor/autoload.php';
+  
+  $url = $_SERVER['PATH_INFO'] ?? '/';
+  
+  Monitor::Pv($url, 8);  // 日 小时 分钟 秒 pv
+  Monitor::Pv($url, 4);  // 小时 分钟 秒 pv
+  Monitor::Pv($url, 2);  // 分钟 秒 pv
+  Monitor::Pv($url, 1);  // 秒 pv
+  ```
+
+  - 参数说明
+    - $url     要统计的接口或者web url
+    - $level  统计级别 数字越大 统计的越全面 默认为8
+
+- 读取统计的PV 比如在管理后台读取之后绘制曲线图
+
+  - 示例
+
+  ```php
+  require __DIR__ . '/../vendor/autoload.php';
+  $data = Monitor::GetPv($url, null, 8);  // 读7天数据
+  $data = Monitor::GetPv($url, 3, 8);			// 读3天数据
+  $data = Monitor::GetPv($url, 8, 4);			// 读8天小时数据
+  ```
+
+  - 参数说明
+    - $url         要读取的接口或者web url的pv，默认为null，读取所有
+    - $section 要读取的区间 默认7天 12小时 30分钟 60秒
+    - $level      读取级别，8=读取天PV，4=读取小时PV，2=读取分钟PV，1=读取秒PV
+
+- 删除期限外PV
+
+  ```php
+  require __DIR__ . '/../vendor/autoload.php';
+  Monitor::DelPv(null, null, 2);
+  ```
+
+  - 参数说明
+    - $url          要删除的url
+    - $section 要删除的区间 默认(7,14)天，（12,24]小时，(30,60]分钟,(60,150]秒
+    - $level      要删除的项
+      - 8 删除日PV     建议每日执行
+      - 4 删除小时PV 建议每小时执行
+      - 2 删除分钟PV 建议每15分钟执行
+      - 1 删除秒PV 建议每分钟执行
+
+- 清除所有PV
+
+  - 这里清除的是所有PV统计，建议用户根据自己的业务针对清除
+
+  ```php
+  require __DIR__ . '/../vendor/autoload.php';
+  Monitor::ClearPv();
+  ```

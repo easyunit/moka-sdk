@@ -20,6 +20,7 @@ class Monitor
     {
         date_default_timezone_set('Asia/Shanghai');
         $now = time();
+        moka_redis()->hset('pv_list', $url, $url); // 方便定时器定期清理PV
         switch ($level) {
             case '8':
                 $total_key = 'pv_day:all';
@@ -177,5 +178,25 @@ class Monitor
         // $res = moka_redis()->zrem($key, 1596854700, 1596854760);
 
         return true;
+    }
+
+    /**
+     * 清除所有PV
+     */
+    public static function ClearPv()
+    {
+        $res = moka_redis()->HGetAll('pv_list');
+        moka_redis()->del('pv_sec:all');
+        moka_redis()->del('pv_min:all');
+        moka_redis()->del('pv_hour:all');
+        moka_redis()->del('pv_day:all');
+
+        foreach ($res as $key => $value) {
+            moka_redis()->del('pv_sec:' . $value);
+            moka_redis()->del('pv_min:' . $value);
+            moka_redis()->del('pv_hour:' . $value);
+            moka_redis()->del('pv_day:' . $value);
+        }
+        moka_redis()->del('pv_list');
     }
 }

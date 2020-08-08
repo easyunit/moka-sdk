@@ -21,7 +21,10 @@ $res = Monitor::GetPv($url, null, 8);  // 读取7天内所有pv
 $res = Monitor::GetPv($url, null, 4);  // 读取12小时内所有pv
 $res = Monitor::GetPv($url, null, 2);  // 读取30分钟内所有pv
 $res = Monitor::GetPv($url, null, 1);  // 读取60秒内所有pv
-dd($res);
+// dd($res);
 
 // 删除PV
 $bool = Monitor::DelPv(null, null, 2);
+
+// 清除所有PV
+// Monitor::ClearPv();
