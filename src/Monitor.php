@@ -152,7 +152,7 @@ class Monitor
             case '2': // 每15分钟执行一次 删除(30-60]分钟
                 $key = $url ? 'pv_min:' . $url : 'pv_min:all';
                 $section = $section ?? 30;
-                $section_x2 =  $section * 250;
+                $section_x2 =  $section * 2;
                 $min = strtotime(date('Y-m-d H:i', $now));
                 $member = array();
                 for ($i = $section; $i < $section_x2; $i++) {
