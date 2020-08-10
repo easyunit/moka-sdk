@@ -1,8 +1,7 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+// require __DIR__ . '/../vendor/autoload.php';
 
-use Moka\Funnel;
 
 if (!function_exists('dd')) {
     function dd($param)
@@ -84,54 +83,31 @@ if (!function_exists('p')) {
     }
 }
 
-if (!function_exists('moka_redis')) {
-    /**
-     * -------------------------------------------
-     * Redis连接对象 用户需要结合框架自行实现
-     * @param Integer $dbindex 数据库
-     * @param String||Array   $config  配置项文件名
-     * -------------------------------------------
-     */
-    function moka_redis(Int $dbindex = 0, $config = 'default')
-    {
+// if (!function_exists('moka_redis')) {
+//     /**
+//      * -------------------------------------------
+//      * Redis连接对象 用户需要结合框架自行实现
+//      * @param Integer $dbindex 数据库
+//      * @param String||Array   $config  配置项文件名
+//      * -------------------------------------------
+//      */
+//     function moka_redis(Int $dbindex = 0, $config = 'default')
+//     {
 
-        if ($config = 'default') {
-            // 此处为测试时使用
-            $conf = array();
-            $conf['host'] = '127.0.0.1';
-            $conf['port'] = 16379;
-            $conf['pass'] = 'root';
-            $conf['flag'] = 'default';
-        } else {
-            // 此处需要用户自行实现
-            $conf = \think\Config::get('redis.' . $config);
-            $conf['flag'] = $config;
-        }
+//         if ($config = 'default') {
+//             // 此处为测试时使用
+//             $conf = array();
+//             $conf['host'] = '127.0.0.1';
+//             $conf['port'] = 16379;
+//             $conf['pass'] = 'root';
+//             $conf['flag'] = 'default';
+//         } else {
+//             // 此处需要用户自行实现
+//             $conf = \think\Config::get('redis.' . $config);
+//             $conf['flag'] = $config;
+//         }
 
 
-        return \Moka\Redis::instance($dbindex, $conf);
-    }
-}
-
-if (!function_exists('isActionAllowed')) {
-    /**
-     * -------------------------------------------
-     * 漏斗限流
-     * @param Integer  $user_id   用户id
-     * @param String   $action    用户的操作
-     * @param Int      $capacity  漏斗容量
-     * @param Int      $leaking_rate 流水速率
-     * -------------------------------------------
-     */
-    function isActionAllowed(Int $user_id, String $action, $capacity = 60, $leaking_rate = 30): bool
-    {
-        $key = 'hist:' . $user_id . ':' . $action;
-        // $key = sprintf("%s:%s", $user_id, $action);
-        $funnel = $GLOBALS['funnel'][$key] ?? '';
-        if (!$funnel) {
-            $funnel  = new Funnel($capacity, $leaking_rate);
-            $GLOBALS['funnel'][$key] = $funnel;
-        }
-        return $funnel->watering(1);
-    }
-}
+//         return \Moka\Redis::instance($dbindex, $conf);
+//     }
+// }
