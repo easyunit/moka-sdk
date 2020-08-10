@@ -167,39 +167,38 @@ moka_redis(0,'cluster')->get('name');   // 使用分布式集群进行操作
 
 - 漏斗限流
 
-  - php漏斗限流 如果采用分布式 redis暂时不支持原子性操作，需要安装redis-cell扩展
+  - 需要安装redis-cell扩展
 
-  - php内实现漏斗限流，则不支持分布式
-
-    ```php
-    /**
-     * -------------------------------------------
-     * 漏斗限流
-     * @param Integer  $user_id   用户id
-     * @param String   $action    用户的操作
-     * @param Int      $capacity  漏斗容量
-     * @param Int      $leaking_rate 流水速率
-     * -------------------------------------------
-     */
-    isActionAllowed(Int $user_id, String $action, $capacity = 60, $leaking_rate = 30): bool
-    ```
-
-  - 使用示例
+  - 需要自行实现moka_redis()
 
     ```php
-    $funnels = [];
-    global $funnel;
-    
-    for ($i = 0; $i < 30; $i++) {
-        echo $i;
-        // user_id 操作 最大容量 流水速率
-        d(isActionAllowed("110", "reply", 15, 0.3));
-        echo '</br>';
-        sleep(1);
-    }
+        /**
+         * 限流
+         * @param String $action    要进行的操作 比如 reply:1 用户1进行回复
+         * @param Int    $max_burst 漏斗容量||初始令牌数      比如用户1初始情况下，可以连续回复15次
+         * @param Int    $max_count 消化速率||时间内产生令牌的数量
+         * @param Int    $period    时间限制
+         * @param Int    $apply     默认申请令牌数量
+         * @return Array
+         */
+    LeakyBucket::IsPass($action, $max_burst = 15, $max_count = 30, $period = 60, $apply = 1)
     ```
 
-    
+  - 返回值说明
+
+    - 类型 返回bool说明未安装redis-cell插件，返回数组，说明操作成功，需用户自行判断是否允许通过
+  
+    ```json
+    [
+    	'0' => 0,		// 0 请求通过，1 请求拒绝
+    	'1' => 16,	// 容量
+    	'2' => 15,	// 剩余空间
+    	'3' => -1,	// 如果请求被拒绝，请多少s后重试
+    	'4' => 15   // 多长时间后，漏斗完全空闲
+    ]
+    ```
+  
+  
 
 ## 接口监控
 
