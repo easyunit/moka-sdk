@@ -70,7 +70,7 @@ class Redis
         try {
             self::$_instance[$flag]->client->select($dbindex);
         } catch (\Exception $e) {
-            return dd('选择数据库失败，请检查密码', '', 500);
+            return dd('Sdk链接Redis失败，请检查密码', '', 500);
         }
         return self::$_instance[$flag]->client;
     }
