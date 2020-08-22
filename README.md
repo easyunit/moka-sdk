@@ -1,7 +1,7 @@
 ## 安装
 
 ```bash
-composer require easyunit/moka-sdk=1.0.0.x-dev
+composer require easyunit/moka-sdk=v0.0.1
 ```
 
 ## SDK功能
