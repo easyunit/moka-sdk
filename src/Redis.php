@@ -23,6 +23,7 @@ class Redis
      */
     private function __construct(String $config, array $conf)
     {
+        $conf['pass'] = $conf['pass'] ?? $conf['password'];
         if ($config == 'cluster') {
             // 待测试
             $this->client = new \RedisCluster('', $conf['list'], $conf['timeout'], $conf['read_timeout'], $conf['presistent'], $conf['pass']);
