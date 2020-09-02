@@ -10,7 +10,7 @@ if (!function_exists('dd')) {
         header("HTTP/1.1 400 Bad Request");
         $data['code']       = 200;
         $data['time']       = time();
-        $data['url']        = $_SERVER['HTTP_HOST'];
+        $data['url']        = $_SERVER['HTTP_HOST'] ?? '';
         $data['data']        = $param;
         echo json_encode($data);
         die;
